@@ -69,6 +69,7 @@ func (p *ph) getSubset(subset []int, mHash, seed []byte) error {
 
 	toHash := make([]byte, 2*N)
 	subsetSeed := make([]byte, N)
+	// memset(iv, 0, DRBG_IVLEN)
 	iv := make([]byte, N)
 	randStream := make([]byte, STREAM_LEN)
 
@@ -76,10 +77,6 @@ func (p *ph) getSubset(subset []int, mHash, seed []byte) error {
 	copy(toHash[N:], mHash[:N])
 	haraka.Haraka512(subsetSeed, toHash)
 
-	// memset(iv, 1, DRBG_IVLEN)
-	for i := range iv {
-		iv[i] = 1
-	}
 	if err := _DRBG(randStream, subsetSeed, iv, STREAM_LEN); err != nil {
 		return err
 	}
